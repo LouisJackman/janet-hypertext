@@ -245,7 +245,7 @@
         (emit (doctype-to-string (x :doctype)))
         (newline)
         (elem-to-string (x :document) 0 true))
-      (elem-to-string x 0)))
+      (elem-to-string x 0 true)))
 
   to-string)
 
