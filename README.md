@@ -65,6 +65,13 @@ A HTML DSL for [Janet](https://janet-lang.org/).
 * Decent error messages for common mistakes with its macros.
 * Generate both whole pages and HTML snippets.
 
+# Official Mirror of the GitLab Repository
+
+This repository is hosted [on
+GitLab.com](https://gitlab.com/louis.jackman/janet-hypertext). If you're seeing
+this on GitHub, you're on the official GitHub mirror. [Go to
+GitLab](https://gitlab.com/louis.jackman/janet-hypertext) to contribute.
+
 # Alternatives
 
 If this library isn't to your taste, consider these other HTML-emitting
