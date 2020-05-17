@@ -120,14 +120,14 @@
 
 (defn page
   "Produces a page with a provided doctype and a document root element. If the
-  doctype is omitted, HTML5 is assumed."
+                                                                                                                                       doctype is omitted, HTML5 is assumed."
   [arg1 &opt document]
   (if (nil? document)
     {:doctype (doctype :html5)
      :document arg1}
     (if (struct? arg1)
       {:doctype arg1
-      :document document}
+       :document document}
       (errorf "expecting a doctype struct; did you type `:html5` where you meant `(hypertext/doctype :html5)`?"))))
 
 (defn- resembles-page [x]
@@ -258,7 +258,7 @@
 
 (defn in-memory-producer
   "Emits string fragments into an in-memory buffer, which can later be
-                                                                                                                                       \"collected\" into a string."
+  \"collected\" into a string."
   [&opt buffer]
   (default buffer @"")
 
@@ -274,7 +274,7 @@
 
 (defn to-string
   "Converts an element into a HTML string eagerly in memory, returning a
-                                                                                                                                       string."
+  string."
   [elem &keys {:indent? indent?
                :newlines? newlines?}]
   (let [producer (in-memory-producer)
@@ -288,7 +288,7 @@
 
 (defn emit-as-string-fragments
   "Converts an element into a HTML string lazily, streaming the string fragments
-                                                                                                                                       out via the provided function."
+  out via the provided function."
   [elem emit &keys {:indent? indent?
                     :newlines? newlines?}]
   (let [producer (streaming-producer emit)
