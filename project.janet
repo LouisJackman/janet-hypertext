@@ -1,6 +1,6 @@
 (declare-project
-  :name "janet-hypertext"
-  :description "HTML creation, both lazily and eagerly, with a lightweight macro-based DSL"
+  :name "hypertext"
+  :description "A HTML DSL, creating escaped HTML both eagerly and lazily."
   :dependencies []
   :author "Louis Jackman"
   :license "MIT"
