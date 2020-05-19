@@ -79,15 +79,12 @@ GitLab.com](https://gitlab.com/louis.jackman/janet-hypertext). If you're seeing
 this on GitHub, you're on the official GitHub mirror. [Go to
 GitLab](https://gitlab.com/louis.jackman/janet-hypertext) to contribute.
 
-# Alternatives
+# Installation
 
-If this library isn't to your taste, consider these other HTML-emitting
-libraries for Janet:
+Install with `jpm install https://gitlab.com/louis.jackman/janet-hypertext`,
+which might require `sudo`. Import into your Janet programs with:
 
-* [janet-html](https://github.com/brandonchartier/janet-html)
-* [The built-in HTML emitter in Joy](https://github.com/joy-framework/joy)
-
-`janet-hypertext`'s doctype generation was borrowed from Joy.
+`(import "hypertext")`
 
 # Documentation
 
@@ -221,4 +218,14 @@ error: a HTML tuple can have a maximum of three items: a tag, an attributes
 struct, and a children tuple; did you forget the wrap all of the children nodes
 in `[` and `]`, or forget to put the attributes straight after the tag?
 ```
+
+# Alternatives
+
+If this library isn't to your taste, consider these other HTML-emitting
+libraries for Janet:
+
+* [janet-html](https://github.com/brandonchartier/janet-html)
+* [The built-in HTML emitter in Joy](https://github.com/joy-framework/joy)
+
+`janet-hypertext`'s doctype generation was borrowed from Joy.
 
