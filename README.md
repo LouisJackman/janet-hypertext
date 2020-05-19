@@ -54,7 +54,7 @@ A HTML DSL for [Janet](https://janet-lang.org/).
 <!DOCTYPE html>
 <html>
   <head>
-    <title>
+    <title class="header">
       Test Page
     </title>
   </head>
