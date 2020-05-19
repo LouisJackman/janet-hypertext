@@ -209,12 +209,23 @@
   (var elem-to-string nil)
 
   (defn children-to-str [children indent-level]
-    (each child children
+    (for i 0 (length children)
+      (def child (children i))
+      (def previous-child (get children (dec i)))
+      (def sequenced-text (and (string? child)
+                               (string? previous-child)))
+      (def fold-whitespace (or (string? child)
+                               (string? previous-child)))
+
+      (when sequenced-text
+        (emit " "))
+
+      (unless fold-whitespace
+        (:newline formatter)
+        (:indent formatter indent-level))
+
       (case (type child)
-        :string (do
-                  (:indent formatter indent-level)
-                  (emit (escape-text-node child))
-                  (:newline formatter))
+        :string (emit (escape-text-node child))
         :struct (elem-to-string child indent-level)
         (errorf (string "expecting either a text node (string) or a child element (struct), but received a "
                         (pretty-format))
@@ -222,21 +233,19 @@
 
   (set elem-to-string (fn [elem indent-level &opt top-level]
                         (default top-level false)
-                        (:indent formatter indent-level)
                         (emit "<")
                         (emit (elem :tag))
                         (when (elem :attrs)
                           (attrs-to-str (elem :attrs)))
                         (emit ">")
                         (unless (empty? (elem :children))
-                          (:newline formatter)
                           (children-to-str (elem :children) (inc indent-level))
-                          (:indent formatter indent-level))
+                          (unless (string? (last (elem :children)))
+                           (:newline formatter)
+                           (:indent formatter indent-level)))
                         (emit "</")
                         (emit (elem :tag))
-                        (emit ">")
-                        (unless top-level
-                          (:newline formatter))))
+                        (emit ">")))
 
   (defn to-string [x]
     (if (string? x)

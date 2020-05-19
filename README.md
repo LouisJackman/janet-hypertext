@@ -37,16 +37,9 @@ A HTML DSL for [Janet](https://janet-lang.org/).
 ```html
 <body>
   <section class="abc" id="foobar">
-    <h1>
-      A Page
-    </h1>
+    <h1>A Page</h1>
     <p>
-      <em>
-        This is a line
-      </em>
-      &lt;script&gt;alert(&amp;quot;Hello, world!&amp;quot;)&lt;&amp;#x2F;script&gt;
-      This is another line
-    </p>
+      <em>This is a line</em>&lt;script&gt;alert(&amp;quot;Hello, world!&amp;quot;)&lt;&amp;#x2F;script&gt; This is another line</p>
     <hr></hr>
   </section>
 </body>
@@ -54,9 +47,7 @@ A HTML DSL for [Janet](https://janet-lang.org/).
 <!DOCTYPE html>
 <html>
   <head>
-    <title class="header">
-      test page)))))
-    </title>
+    <title class="header">Test Page</title>
   </head>
 </html>
 ```
@@ -66,7 +57,8 @@ A HTML DSL for [Janet](https://janet-lang.org/).
 * Lightweight macro-based DSL with as little clutter as possible.
 * Lazy creation of HTML via string emitters, or eager creation into a single
   buffer in memory for simple cases.
-* _Optional_ indenting and newlines for pretty-printed results.
+* _Optional_ indenting and newlines for pretty-printed results, but fuses text
+  nodes to their edge tags to avoid accidentally creating folded whitespace.
 * Macro-based, data-based, or function-call based APIs for each need.
 * Auto-escaping interpolation of Janet values.
 * Decent error messages for common mistakes with its macros.

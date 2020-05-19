@@ -74,7 +74,7 @@
 (defn- test-escaping []
   (def nefarious "<script>alert(0)</script>")
   (def element (markup (p [nefarious])))
-  (def expected "<p>\n  &lt;script&gt;alert(0)&lt;&amp;#x2F;script&gt;\n</p>")
+  (def expected "<p>&lt;script&gt;alert(0)&lt;&amp;#x2F;script&gt;</p>")
 
   (assert (= element expected)))
 
@@ -101,7 +101,7 @@
              expected-string))
 
   (with-dyns [default-formatter no-indents]
-    (def marshalled "<p class=\"abc\">\nHello, \n<em>\nworld!\n</em>\n</p>")
+    (def marshalled "<p class=\"abc\">Hello, <em>world!</em>\n</p>")
     (def expected-string (to-string expected))
 
     (assert (= marshalled
@@ -112,9 +112,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>
-      Hola!
-    </title>
+    <title>Hola!</title>
   </head>
 </html>
 ``)
