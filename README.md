@@ -93,11 +93,9 @@ attribute values:
 ```
 janet:1:>(def x 42)
 42
-janet:2:> (print (hypertext/html (p :class x hr [x])))
+janet:2:> (print (hypertext/markup (p :class x hr [x])))
 <p class="42">
-  <hr></hr>
-  42
-</p>
+  <hr></hr>42</p>
 nil
 ```
 
@@ -193,7 +191,7 @@ newlines. You can minify the result by choosing a different formatter or
 defining your own:
 
 ```
-(hypertext/to-string element hyper/minified)
+(hypertext/to-string element hypertext/minified)
 ```
 
 Custom formatters can be passed in for most functions converting elements into
