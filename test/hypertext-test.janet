@@ -42,9 +42,9 @@
   (assert-expected element))
 
 (defn- test-html []
-  (def element (html (p :class "abc"
-                        "Hello, "
-                        (em "world!"))))
+  (def element (markup (p :class "abc"
+                          "Hello, "
+                          (em "world!"))))
   (def expected (to-string expected))
 
   (assert (= element expected)))
@@ -65,9 +65,15 @@
   (assert (= ((element :children) 0)
              "42")))
 
+(defn- test-nesting []
+  (def b (from (b "Holla!")))
+  (def p (markup (p [b])))
+  (def expected (markup (p (b "Holla!"))))
+  (assert (deep= expected p)))
+
 (defn- test-escaping []
   (def nefarious "<script>alert(0)</script>")
-  (def element (html (p [nefarious])))
+  (def element (markup (p [nefarious])))
   (def expected "<p>\n  &lt;script&gt;alert(0)&lt;&amp;#x2F;script&gt;\n</p>")
 
   (assert (= element expected)))
@@ -88,12 +94,18 @@
 
   (assert (deep= element expected)))
 
-(defn- test-elem-marshal []
+(defn- test-elem-marshal-and-formatting []
   (def marshalled "<p class=\"abc\">Hello, <em>world!</em></p>")
-  (def expected (to-string expected
-                           :indent? false
-                           :newlines? false))
-  (assert (= marshalled expected)))
+  (def expected-string (to-string expected :formatter minified))
+  (assert (= marshalled
+             expected-string))
+
+  (with-dyns [default-formatter no-indents]
+    (def marshalled "<p class=\"abc\">\nHello, \n<em>\nworld!\n</em>\n</p>")
+    (def expected-string (to-string expected))
+
+    (assert (= marshalled
+               expected-string))))
 
 (defn- test-page-marshal []
   (def marshalled ``
@@ -115,9 +127,10 @@
 (test-html)
 (test-from-data-interpolation)
 (test-from-interpolation)
+(test-nesting)
 (test-escaping)
 (test-doctype-string)
 (test-html-page)
-(test-elem-marshal)
+(test-elem-marshal-and-formatting)
 (test-page-marshal)
 

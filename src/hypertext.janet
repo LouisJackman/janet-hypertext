@@ -80,7 +80,10 @@
               key))
     doctype))
 
-(defn doctype [version &opt style]
+(defn doctype
+  "Produce a doctype with a version such as `:html5` and an _optional_ style
+  like `:frameset`"
+  [version &opt style]
   {:version version
    :style style})
 
@@ -141,6 +144,43 @@
 (def- escape-attr-value (escaper attr-value-escapes))
 
 #
+# Marshalling Formatters
+#
+# Marshalling formatters consist of two actions: indent and newline. They
+# implement these according to their overall formatting strategy and take an
+# emitter on construction.
+#
+
+(defn pretty
+  "Format with indents and newlines."
+  [emit]
+  {:newline (fn (_)
+              (emit "\n"))
+   :indent (fn (_ indent-level)
+             (for _ 0 indent-level
+               (emit "  ")))})
+
+(defn no-indents
+  "Indent without indents but with newlines."
+  [emit]
+  {:newline (fn (_)
+              (emit "\n"))
+   :indent (fn (_ _))})
+
+(defn minified
+  "Neither indent nor add newlines."
+  [_]
+  {:newline (fn (_))
+   :indent (fn (_ _))})
+
+(def default-formatter
+  "The symbol of the dynamic variable representing the default formatter to use.
+  It is used if one is not explicitly passed in to a function."
+  (gensym))
+
+(setdyn default-formatter pretty)
+
+#
 # Element Marshalling
 #
 
@@ -149,24 +189,10 @@
   element, each string fragment going out via `emit`. No guarantee is made about
   the content or size of the fragments; they are only guaranteed to be a valid
   HTML document if all combined together."
-  [emit &keys {:indent? indent?
-               :newlines? newlines?}]
-  (default indent? true)
-  (default newlines? true)
+  [emit &keys {:formatter formatter}]
+  (default formatter (dyn default-formatter pretty))
 
-  (defn real-indent [indent-level]
-    (for _ 0 indent-level
-      (emit "  ")))
-
-  (def indent
-    (if indent?
-      real-indent
-      identity))
-
-  (def newline
-    (if newlines?
-      (partial emit "\n")
-      nop))
+  (def formatter (formatter emit))
 
   (defn quote-attr-value [s]
     (emit "\"")
@@ -186,9 +212,9 @@
     (each child children
       (case (type child)
         :string (do
-                  (indent indent-level)
+                  (:indent formatter indent-level)
                   (emit (escape-text-node child))
-                  (newline))
+                  (:newline formatter))
         :struct (elem-to-string child indent-level)
         (errorf (string "expecting either a text node (string) or a child element (struct), but received a "
                         (pretty-format))
@@ -196,21 +222,21 @@
 
   (set elem-to-string (fn [elem indent-level &opt top-level]
                         (default top-level false)
-                        (indent indent-level)
+                        (:indent formatter indent-level)
                         (emit "<")
                         (emit (elem :tag))
                         (when (elem :attrs)
                           (attrs-to-str (elem :attrs)))
                         (emit ">")
                         (unless (empty? (elem :children))
-                          (newline)
+                          (:newline formatter)
                           (children-to-str (elem :children) (inc indent-level))
-                          (indent indent-level))
+                          (:indent formatter indent-level))
                         (emit "</")
                         (emit (elem :tag))
                         (emit ">")
                         (unless top-level
-                          (newline))))
+                          (:newline formatter))))
 
   (defn to-string [x]
     (if (string? x)
@@ -218,7 +244,7 @@
       (if (resembles-page x)
         (do
           (emit (doctype-to-string (x :doctype)))
-          (newline)
+          (:newline formatter)
           (elem-to-string (x :document) 0 true))
         (elem-to-string x 0 true))))
 
@@ -250,28 +276,24 @@
 (defn to-string
   "Converts an element into a HTML string eagerly in memory, returning a
   string."
-  [elem &keys {:indent? indent?
-               :newlines? newlines?}]
+  [elem &keys {:formatter formatter}]
   (let [producer (in-memory-producer)
         emit (fn [s]
                (:emit producer s))
         marshal-element (element-marshaller emit
-                                            :indent? indent?
-                                            :newlines? newlines?)]
+                                            :formatter formatter)]
     (marshal-element elem)
     (:collect producer)))
 
 (defn emit-as-string-fragments
   "Converts an element into a HTML string lazily, streaming the string fragments
   out via the provided function."
-  [elem emit &keys {:indent? indent?
-                    :newlines? newlines?}]
+  [elem emit &keys {:formatter formatter}]
   (let [producer (streaming-producer emit)
         emit (fn [s]
                (:emit producer s))
         marshal-element (element-marshaller emit
-                                            :indent? indent?
-                                            :newlines? newlines?)]
+                                            :formatter formatter)]
     (marshal-element elem)))
 
 #
@@ -318,6 +340,7 @@
                  (case (type data)
                    :symbol (elem data)
                    :tuple (html-from-tuple data)
+                   :struct data
 
                    # Autoconvert Janet values into strings for text nodes.
                    (string data))))
@@ -369,7 +392,7 @@
 
   (if (and (< 1 (length body))
            (not (keyword? (body 0))))
-    (error "only a single root element can be passed to `html`; if you want to specify doctypes, ensure keywords are being used and that they come before the root document element"))
+    (error "only a single root element can be passed to `hypertext/markup`; if you want to specify doctypes, ensure keywords are being used and that they come before the root document element"))
 
   (let [[first second rest] body]
     (if (keyword? first)
@@ -395,11 +418,12 @@
   [& body]
   (from-gen body))
 
-(defmacro html
+(defmacro markup
   "Produces a HTML string or a whole page string from a lightweight
   representation based on Janet syntax. Whether it's an element or a whole page
   depends on whether it starts with doctype-related keywords. See README.md for
-  an example."
+  an example. There is no formatter argument; formatting can only be changed by
+  setting `hypertext/default-formatter`."
   [& body]
 
   ~(,to-string ,(from-gen body)))

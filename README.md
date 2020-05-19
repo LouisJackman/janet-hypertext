@@ -8,21 +8,18 @@ A HTML DSL for [Janet](https://janet-lang.org/).
 (def nefarious `<script>alert("Hello, world!")</script>`)
 
 (def element
-  (hypertext/html
-    (div :class "abc" :id "foobar"
-      [nefarious]
-      (p
-       (em "This is a line")
-       [(string "This is "
-                "another line")])
-      hr)))
+  (hypertext/markup
+    (body
+      (section :class "abc" :id "foobar"
+        (h1 "A Page")
+        (p
+          (em "This is a line")
+          [nefarious]
+          [(string "This is "
+                   "another line")])
+        hr))))
 
 (print element)
-
-(->
-  (hypertext/from hr)
-  hypertext/to-string
-  print)
 
 (def elem-class "header")
 
@@ -38,24 +35,27 @@ A HTML DSL for [Janet](https://janet-lang.org/).
   (hypertext/emit-as-string-fragments prin))
 ```
 ```html
-<div class="abc" id="foobar">
-  &lt;script&gt;alert(&amp;quot;Hello, world!&amp;quot;)&lt;&amp;#x2F;script&gt;
-  <p>
-    <em>
-      This is a line
-    </em>
-    This is another line
-  </p>
-  <hr></hr>
-</div>
-
-<hr></hr>
+<body>
+  <section class="abc" id="foobar">
+    <h1>
+      A Page
+    </h1>
+    <p>
+      <em>
+        This is a line
+      </em>
+      &lt;script&gt;alert(&amp;quot;Hello, world!&amp;quot;)&lt;&amp;#x2F;script&gt;
+      This is another line
+    </p>
+    <hr></hr>
+  </section>
+</body>
 
 <!DOCTYPE html>
 <html>
   <head>
     <title class="header">
-      Test Page
+      test page)))))
     </title>
   </head>
 </html>
@@ -197,12 +197,23 @@ be used directly if you need more control.
 ## Pretty-Printing
 
 Results are pretty-printed by default. They indent properly and produce
-newlines. You can "minify" the result by disabling both of these features:
+newlines. You can minify the result by choosing a different formatter or
+defining your own:
 
 ```
-(hypertext/to-string element :newlines? false
-                             :indent? false)
+(hypertext/to-string element hyper/minified)
 ```
+
+Custom formatters can be passed in for most functions converting elements into
+strings, but a default can be specified if this becomes tedious:
+
+```
+(setdyn (hypertext/default-formatter)
+        (hypertext/minified))
+```
+
+In fact, this is the only way to change the formatting produced by
+`hypertext/markup`.
 
 ## Error Messages
 
