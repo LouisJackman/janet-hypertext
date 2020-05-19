@@ -5,13 +5,16 @@ A HTML DSL for [Janet](https://janet-lang.org/).
 ```janet
 (import "hypertext")
 
+(def nefarious `<script>alert("Hello, world!")</script>`)
+
 (def element
   (hypertext/html
     (div :class "abc" :id "foobar"
-      "Hello, <script>alert(0)</script> world"
+      [nefarious]
       (p
        (em "This is a line")
-       "This is another line")
+       [(string "This is "
+                "another line")])
       hr)))
 
 (print element)
@@ -21,11 +24,14 @@ A HTML DSL for [Janet](https://janet-lang.org/).
   hypertext/to-string
   print)
 
+(def elem-class "header")
+
 (def page
   (hypertext/from :html5
     (html
       (head
-        (title "Test Page")))))
+        (title :class elem-class
+          "Test Page")))))
 
 (->
   page
@@ -33,7 +39,7 @@ A HTML DSL for [Janet](https://janet-lang.org/).
 ```
 ```html
 <div class="abc" id="foobar">
-  Hello, &lt;script&gt;alert(0)&lt;&amp;#x2F;script&gt; world
+  &lt;script&gt;alert(&amp;quot;Hello, world!&amp;quot;)&lt;&amp;#x2F;script&gt;
   <p>
     <em>
       This is a line
@@ -52,7 +58,7 @@ A HTML DSL for [Janet](https://janet-lang.org/).
       Test Page
     </title>
   </head>
-</html>nil
+</html>
 ```
 
 # Features
@@ -62,6 +68,7 @@ A HTML DSL for [Janet](https://janet-lang.org/).
   buffer in memory for simple cases.
 * _Optional_ indenting and newlines for pretty-printed results.
 * Macro-based, data-based, or function-call based APIs for each need.
+* Auto-escaping interpolation of Janet values.
 * Decent error messages for common mistakes with its macros.
 * Generate both whole pages and HTML snippets.
 
@@ -86,15 +93,48 @@ libraries for Janet:
 
 The exported functions have documentation strings; use `doc` to read them.
 
+## Interpolation of Janet Values
+
+Janet values can be interpolated as text nodes (freehand text within elements)
+and attribute values. Both are escaped, avoiding basic injection attacks.
+
+Interpolation is done with bracketed tuples for children nodes, or directly as
+attribute values:
+
+```
+janet:1:>(def x 42)
+42
+janet:2:> (print (hypertext/html (p :class x hr [x])))
+<p class="42">
+  <hr></hr>
+  42
+</p>
+nil
+```
+
+_It only escapes HTML_. This might seem obvious, but developers have
+historically shot themselves in the foot by embedding languages within HTML,
+i.e. inline scripts, and still expecting their HTML-only escaping to still
+suffice inside. [It will
+not](https://volatilethunk.com/posts/2018/03/03/escape-bypassing-language-injection-through-multiple-embedded-languages/post.html),
+and `janet-hypertext` is not unique in that regard.
+
+If you need to provide Janet values for more than attribute values or text
+nodes, you'll need to use the data-oriented API, which allows splicing anything
+via Janet's quasiquoting.
+
 ## Data-Oriented API
 
 If the DSL-based approach in the first example is too abstracted away for you,
-or you want to mix custom Janet values into the result, consider the more direct
-data-oriented API `hypertext/from-data` instead:
+or you want to mix custom Janet values more liberally into the result, consider
+the more direct data-oriented API `hypertext/from-data` instead. It works great
+with quasiquoting:
 
 ```janet
+(def class-value "abc")
+
 (hypertext/from-data
-  '(html [(div {:class "abc" :id "foobar"}
+  ~(html [(div {:class ,class-value :id "foobar"}
                ["Hello, <script>alert(0)</script> world"
                 (p [(em ["This is a line"])
                     "This is another line"])
@@ -104,9 +144,6 @@ data-oriented API `hypertext/from-data` instead:
 This form is more amenable to data structure manipulation, but needs more
 syntactical noise to distinguish attributes and children. In particular,
 children must alway be wrapped in a tuple for each element.
-
-I'm still working out an elegant way to allow splicing _escaped_ data using the
-macro DSL, but the data-oriented API will suffice until that's implemented.
 
 Unlike the macro forms, this API won't automatically create whole pages with
 doctypes if doctype keywords are present. Instead, define whole documents like

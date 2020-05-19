@@ -49,6 +49,29 @@
 
   (assert (= element expected)))
 
+(defn- test-from-data-interpolation []
+  (def x 42)
+  (def element (from-data ~(p {:class x} [42])))
+  (comment (assert (= ((element :attrs) :class)
+             "42")))
+  (assert (= ((element :children) 0)
+             "42")))
+
+(defn- test-from-interpolation []
+  (def x 42)
+  (def element (from (p :class x [x])))
+  (assert (= ((element :attrs) :class)
+             "42"))
+  (assert (= ((element :children) 0)
+             "42")))
+
+(defn- test-escaping []
+  (def nefarious "<script>alert(0)</script>")
+  (def element (html (p [nefarious])))
+  (def expected "<p>\n  &lt;script&gt;alert(0)&lt;&amp;#x2F;script&gt;\n</p>")
+
+  (assert (= element expected)))
+
 (defn- test-doctype-string []
   (def expected "<!DOCTYPE html>")
 
@@ -90,6 +113,9 @@
 (test-from-data)
 (test-from)
 (test-html)
+(test-from-data-interpolation)
+(test-from-interpolation)
+(test-escaping)
 (test-doctype-string)
 (test-html-page)
 (test-elem-marshal)
