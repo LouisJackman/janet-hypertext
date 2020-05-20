@@ -191,7 +191,7 @@ newlines. You can minify the result by choosing a different formatter or
 defining your own:
 
 ```
-(hypertext/to-string element hypertext/minified)
+(hypertext/to-string element :formatter hypertext/minified)
 ```
 
 Custom formatters can be passed in for most functions converting elements into
