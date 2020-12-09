@@ -66,10 +66,11 @@ A HTML DSL for [Janet](https://janet-lang.org/).
 
 # Official Mirror of the GitLab Repository
 
-This repository is hosted [on
-GitLab.com](https://gitlab.com/louis.jackman/janet-hypertext). If you're seeing
-this on GitHub, you're on the official GitHub mirror. [Go to
-GitLab](https://gitlab.com/louis.jackman/janet-hypertext) to contribute.
+This repository is currently hosted [on
+GitLab.com](https://gitlab.com/louis.jackman/janet-hypertext). Official mirrors
+exist on [SourceHut](https://git.sr.ht/~louisjackman/janet-hypertext) and
+[GitHub](https://github.com/LouisJackman/janet-hypertext). At the moment, GitLab
+is still the official hub for contributions such as PRs and issues.
 
 # Installation
 
