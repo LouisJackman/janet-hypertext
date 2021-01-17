@@ -1,4 +1,4 @@
-(import "src/hypertext" :prefix "")
+(import "/src/hypertext" :prefix "")
 
 (def- expected {:tag 'p
                 :attrs {:class "abc"}
@@ -74,7 +74,7 @@
 (defn- test-escaping []
   (def nefarious "<script>alert(0)</script>")
   (def element (markup (p [nefarious])))
-  (def expected "<p>&lt;script&gt;alert(0)&lt;&amp;#x2F;script&gt;</p>")
+  (def expected "<p>&lt;script&gt;alert(0)&lt;&#x2F;script&gt;</p>")
 
   (assert (= element expected)))
 
