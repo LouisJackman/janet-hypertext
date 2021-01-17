@@ -75,8 +75,8 @@ is still the official hub for contributions such as PRs and issues.
 
 # Installation
 
-Install with `jpm install https://gitlab.com/louis.jackman/janet-hypertext`,
-which might require `sudo`. Import into your Janet programs with:
+Install with `jpm install hypertext`, which might require `sudo`. Import into
+your Janet programs with:
 
 `(import hypertext)`
 
