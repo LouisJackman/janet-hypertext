@@ -120,26 +120,35 @@
                       [char (string "&" code ";")])
                     codes)))
 
+# Each replacement is done in sequence, so ampersand is singled out and done
+# beforehand because it's the only one which might also appear in escaped
+# replacements.
+(def- text-node-escape-ampersand "amp")
+
 (defn- escaper [escapes]
   (fn [s]
+    (def without-ampersands (string/replace-all "&"
+                                                text-node-escape-ampersand
+                                                s))
+
     (reduce (fn [result [char replacement]]
               (string/replace-all char replacement result))
-            s
+            without-ampersands
             escapes)))
 
-(def- text-node-escapes (escapes {"<" "lt"
-                                  ">" "gt"
-                                  "&" "amp"
-                                  "\"" "quot"
-                                  "/" "#x2F"
-                                  "'" "#x27"
-                                  "%" "#37"}))
+(def- text-node-escapes-sans-ampersand
+  (escapes {"<" "lt"
+            ">" "gt"
+            "\"" "quot"
+            "/" "#x2F"
+            "'" "#x27"
+            "%" "#37"}))
 
-(def- attr-name-escapes text-node-escapes)
+(def- attr-name-escapes text-node-escapes-sans-ampersand)
 
 (def- attr-value-escapes (escapes {"\"" "quot"}))
 
-(def- escape-text-node (escaper text-node-escapes))
+(def- escape-text-node (escaper text-node-escapes-sans-ampersand))
 (def- escape-attr-name (escaper attr-name-escapes))
 (def- escape-attr-value (escaper attr-value-escapes))
 
