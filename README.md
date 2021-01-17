@@ -4,7 +4,7 @@ A HTML DSL for [Janet](https://janet-lang.org/), last tested against Janet
 1.14.1.
 
 ```janet
-(import "hypertext")
+(import hypertext)
 
 (def nefarious `<script>alert("Hello, world!")</script>`)
 
@@ -78,7 +78,7 @@ is still the official hub for contributions such as PRs and issues.
 Install with `jpm install https://gitlab.com/louis.jackman/janet-hypertext`,
 which might require `sudo`. Import into your Janet programs with:
 
-`(import "hypertext")`
+`(import hypertext)`
 
 Hypertext is designed to be used with an explicit package prefix. Importing with
 `use` will bring in overly-generic global names like `from`, so avoid that.
