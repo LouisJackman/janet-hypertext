@@ -1,7 +1,7 @@
 # hypertext
 
 A HTML DSL for [Janet](https://janet-lang.org/), last tested against Janet
-1.13.1.
+1.14.1.
 
 ```janet
 (import "hypertext")
