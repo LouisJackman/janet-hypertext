@@ -1,6 +1,7 @@
-# Janet Hypertext
+# hypertext
 
-A HTML DSL for [Janet](https://janet-lang.org/).
+A HTML DSL for [Janet](https://janet-lang.org/), last tested against Janet
+1.13.1.
 
 ```janet
 (import "hypertext")
@@ -79,6 +80,9 @@ which might require `sudo`. Import into your Janet programs with:
 
 `(import "hypertext")`
 
+Hypertext is designed to be used with an explicit package prefix. Importing with
+`use` will bring in overly-generic global names like `from`, so avoid that.
+
 # Documentation
 
 The exported functions have documentation strings; use `doc` to read them.
@@ -105,7 +109,7 @@ historically shot themselves in the foot by embedding languages within HTML,
 i.e. inline scripts, and still expecting their HTML-only escaping to still
 suffice inside. [It will
 not](https://volatilethunk.com/posts/2018/03/03/escape-bypassing-language-injection-through-multiple-embedded-languages/post.html),
-and `janet-hypertext` is not unique in that regard.
+and `hypertext` is not unique in that regard.
 
 If you need to provide Janet values for more than attribute values or text
 nodes, you'll need to use the data-oriented API, which allows splicing anything
@@ -208,7 +212,7 @@ In fact, this is the only way to change the formatting produced by
 
 ## Error Messages
 
-`janet-hypertext` tries to give useful error messages whenever possible when
+`hypertext` tries to give useful error messages whenever possible when
 transforming your code with its macro. For example:
 
 ```
@@ -229,5 +233,5 @@ libraries for Janet:
 * [janet-html](https://github.com/brandonchartier/janet-html)
 * [The built-in HTML emitter in Joy](https://github.com/joy-framework/joy)
 
-`janet-hypertext`'s doctype generation was borrowed from Joy.
+`hypertext`'s doctype generation was borrowed from Joy.
 
