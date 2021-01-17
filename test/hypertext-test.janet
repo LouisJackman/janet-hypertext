@@ -1,4 +1,4 @@
-(import "/src/hypertext" :prefix "")
+(import "../src/hypertext" :prefix "")
 
 (def- expected {:tag 'p
                 :attrs {:class "abc"}
