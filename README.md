@@ -53,7 +53,7 @@ A HTML DSL for [Janet](https://janet-lang.org/), last tested against Janet
 </html>
 ```
 
-# Features
+## Features
 
 * Lightweight macro-based DSL with as little clutter as possible.
 * Lazy creation of HTML via string emitters, or eager creation into a single
@@ -65,7 +65,7 @@ A HTML DSL for [Janet](https://janet-lang.org/), last tested against Janet
 * Decent error messages for common mistakes with its macros.
 * Generate both whole pages and HTML snippets.
 
-# Official Mirror of the GitLab Repository
+## Official Mirror of the GitLab Repository
 
 This repository is currently hosted [on
 GitLab.com](https://gitlab.com/louis.jackman/janet-hypertext). Official mirrors
@@ -73,7 +73,7 @@ exist on [SourceHut](https://git.sr.ht/~louisjackman/janet-hypertext) and
 [GitHub](https://github.com/LouisJackman/janet-hypertext). At the moment, GitLab
 is still the official hub for contributions such as PRs and issues.
 
-# Installation
+## Installation
 
 Install with `jpm install hypertext`, which might require `sudo`. Import into
 your Janet programs with:
@@ -83,11 +83,11 @@ your Janet programs with:
 Hypertext is designed to be used with an explicit package prefix. Importing with
 `use` will bring in overly-generic global names like `from`, so avoid that.
 
-# Documentation
+## Documentation
 
 The exported functions have documentation strings; use `doc` to read them.
 
-## Interpolation of Janet Values
+### Interpolation of Janet Values
 
 Janet values can be interpolated as text nodes (freehand text within elements)
 and attribute values. Both are escaped, avoiding basic injection attacks.
@@ -115,7 +115,7 @@ If you need to provide Janet values for more than attribute values or text
 nodes, you'll need to use the data-oriented API, which allows splicing anything
 via Janet's quasiquoting.
 
-## Data-Oriented API
+### Data-Oriented API
 
 If the DSL-based approach in the first example is too abstracted away for you,
 or you want to mix custom Janet values more liberally into the result, consider
@@ -149,7 +149,7 @@ so:
                       [(h1 ["Header"])])])))
 ```
 
-## Function-Oriented API
+### Function-Oriented API
 
 The building block for the two layers above is the `hypertext/elem` function,
 which can be used directly:
@@ -164,7 +164,7 @@ which can be used directly:
 If you end up using this solely, you should probably use a lighter-weight
 alternative to this library.
 
-## Lazily Streaming
+### Lazily Streaming
 
 `hypertext/to-string` covers a common case: turning a HTML element into a
 string. What if you want to stream the result lazily to avoid accumulating the
@@ -189,7 +189,7 @@ Both `hypertext/to-string` and `hypertext/emit-as-string-fragments` just
 pass a different receiving function to `hypertext/element-marshaller`, which can
 be used directly if you need more control.
 
-## Pretty-Printing
+### Pretty-Printing
 
 Results are pretty-printed by default. They indent properly and produce
 newlines. You can minify the result by choosing a different formatter or
@@ -210,7 +210,7 @@ strings, but a default can be specified if this becomes tedious:
 In fact, this is the only way to change the formatting produced by
 `hypertext/markup`.
 
-## Error Messages
+### Error Messages
 
 `hypertext` tries to give useful error messages whenever possible when
 transforming your code with its macro. For example:
@@ -225,7 +225,7 @@ struct, and a children tuple; did you forget the wrap all of the children nodes
 in `[` and `]`, or forget to put the attributes straight after the tag?
 ```
 
-# Alternatives
+## Alternatives
 
 If this library isn't to your taste, consider these other HTML-emitting
 libraries for Janet:
